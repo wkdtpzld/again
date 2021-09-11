@@ -1,5 +1,5 @@
 from django import forms
-from django.core.checks import messages
+from django.contrib import messages
 from django.shortcuts import render,get_object_or_404,redirect,resolve_url
 from .models import Comment, Question,Answer
 from django.utils import timezone
@@ -248,6 +248,7 @@ def vote_question(request,question_id):
         question.voter.add(request.user)
     return redirect('pybo_site:detail', question_id=question.id)    
 
+@login_required(login_url='common:login')
 def vote_answer(request, answer_id):
     answer = get_object_or_404(Answer, pk=answer_id)
 
