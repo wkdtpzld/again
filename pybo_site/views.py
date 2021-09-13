@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import messages
+from django.core import paginator
 from django.shortcuts import render,get_object_or_404,redirect,resolve_url
 from .models import Comment, Question,Answer
 from django.utils import timezone
@@ -35,8 +36,19 @@ def index(request):
     return render(request, 'pybo/question_list.html',context)
 
 def detail(request,question_id):
+
     question = get_object_or_404(Question,pk=question_id)
-    context = {'question':question}
+
+    page = request.GET.get('page','1')
+
+    answer_list=Answer.objects.filter(question=question).order_by('-create_date')
+
+    paginator = Paginator(answer_list, 3)
+    page_obj = paginator.get_page(page)
+
+
+    context = {'question':question,'answer_list':page_obj,'page':page}
+
     return render(request, 'pybo/question_detail.html',context)
 
 

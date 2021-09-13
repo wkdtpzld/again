@@ -75,7 +75,7 @@
     </div>
     <!--question 끝 answer 시작-->
     <h5 class="border-bottom my-3 py-2">{{question.answer_set.count}}개의 답변이 있습니다.</h5>
-    {% for answer in question.answer_set.all %}
+    {% for answer in answer_list %}
     <a name='answer_{{ answer.id }}'></a>
     <div class='row my-3'>
         <div class='col-1'>
@@ -138,6 +138,40 @@
         </div>
     </div>
     {% endfor %}
+    <!-- 답변 페이징-->
+        <ul class='pagination justify-content-center'>
+            {% if answer_list.has_previous %}
+                <li class='page-item'>
+                <a class='page-link' href='?page={{ answer_list.previous_page_number }}'>이전</a>
+                </li>
+            {% else %}
+                <li class='page-item-disabled'>
+                <a class='page-link' tabindex='-1' aria-disabled='true' href='#'>이전</a>
+                </li>
+            {% endif %}
+            {% for page_number in answer_list.paginator.page_range %}
+            {% if page_number >= answer_list.number|add:-5 and page_number <= answer_list.number|add:5 %}
+                {% if page_number == answer_list.number %}
+                <li class='page-item active' aria-current='page'>
+                    <a class='page-link' href='?page={{ page_number }}'>{{ page_number }}</a>
+                </li>
+                {% else %}
+                <li class='page-item'>
+                    <a class='page-link' href='?page={{ page_number }}'>{{ page_number }}</a>
+                </li>
+                {% endif%}
+            {% endif %}
+            {% endfor %}
+            {% if answer_list.has_next %}
+            <li class='page-item'>
+                <a class='page-link' href='?page={{ answer_list.next_page_number }}'>다음</a>
+            </li>
+            {% else %}
+            <li class='page-item disabled'>
+                <a class='page-link' tabindex='-1' aria-disabled='true' href='#'>다음</a>
+            </li>
+            {% endif %}
+        </ul>
     <!--answer 끝 answer.form 시작-->
     <form action="{% url 'pybo_site:answer_create' question.id %}" method="post" class="my-3">
         {% csrf_token %}
