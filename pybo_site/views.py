@@ -1,6 +1,6 @@
-from django import forms
+
 from django.contrib import messages
-from django.core import paginator
+
 from django.shortcuts import render,get_object_or_404,redirect,resolve_url
 from .models import Comment, Question,Answer
 from django.utils import timezone
@@ -40,14 +40,25 @@ def detail(request,question_id):
     question = get_object_or_404(Question,pk=question_id)
 
     page = request.GET.get('page','1')
+    kw = request.GET.get('kw','')
+    so = request.GET.get('so','recommend')
 
-    answer_list=Answer.objects.filter(question=question).order_by('-create_date')
+    if so == 'recommend':
+        answer_list=Answer.objects.filter(question=question).annotate(num_voter=Count('voter')).order_by('-num_voter','-create_date')
+    elif so == 'recent':
+        answer_list=Answer.objects.filter(question=question).order_by('-create_date')
+
+    if kw:
+        answer_list = answer_list.filter(
+            Q(content__icontains=kw) |
+            Q(author__username__icontains =kw) 
+        ).distinct()
 
     paginator = Paginator(answer_list, 3)
     page_obj = paginator.get_page(page)
 
 
-    context = {'question':question,'answer_list':page_obj,'page':page}
+    context = {'question':question,'answer_list':page_obj,'page':page, 'kw':kw, 'so':so}
 
     return render(request, 'pybo/question_detail.html',context)
 
@@ -265,7 +276,7 @@ def vote_answer(request, answer_id):
     answer = get_object_or_404(Answer, pk=answer_id)
 
     if request.user == answer.author:
-        messages.error(request, '수정권한이 없습니다.')
+        messages.error(request, '본인이 작성한 답변은 추천할 수 없습니다.')
     else:
         answer.voter.add(request.user)
     return redirect('pybo_site:detail', question_id = answer.question.id)
