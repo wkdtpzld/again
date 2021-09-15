@@ -38,21 +38,6 @@ def signup(request):
         form = UserForm()
     return render(request, 'common/signup.html',{'form':form})
 
-def login(request):
-    if request.method == 'POST':
-        username= request.POST['username']
-        password = request.POST['password']
-
-        user = auth.authenticate(request, username=username, password=password)
-        if user is not None:
-            auth.login(request, user)
-            return redirect('index')
-        else:
-            return render(request, 'common/login.html', {'error':'컷'})
-    else:
-        return render(request, 'common/login.html')
-
-
 def activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
@@ -65,5 +50,5 @@ def activate(request, uidb64, token):
         auth.login(request, user)
         return redirect('index')
     else:
-        return render(request, 'index',{'error':'컷'})
-    return
+        return render(request, 'index',{'error':'nope'})
+    
