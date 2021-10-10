@@ -75,7 +75,8 @@ def answer_create(request, question_id):
             answer.create_date = timezone.now()
             answer.question = question
             answer.save()
-            return redirect('{}#answer_{}'.format(resolve_url('pybo_site:detail',question_id=question.id), answer.id))
+            # TODO: pagination 계산해서 queryparam으로 전달 
+            return redirect('{}'.format(resolve_url('pybo_site:detail',question_id=question.id)))
     else:
         form = AnswerForm()
     context = {'question': question, 'form': form}
@@ -140,6 +141,7 @@ def answer_modify(request, answer_id):
             answer = form.save(commit=False)
             answer.modify_date = timezone.now()
             answer.save()
+            # TODO: pagination 계산해서 queryparam으로 전달, answer.id는 프론트에서 포커싱 하는 로직 만들거 아니면 제거 (아니면 다른 방식으로 처리하던가..)
             return redirect('{}#answer_{}'.format(resolve_url('pybo_site:detail',question_id=answer.question.id),answer.id))
     else:
         form =AnswerForm(instance=answer)
@@ -187,6 +189,7 @@ def comment_modify_question(request, comment_id):
             comment = form.save(commit=False)
             comment.modify_date = timezone.now()
             comment.save()
+            # TODO: pagination 계산해서 queryparam으로 전달, comment.id는 프론트에서 포커싱 하는 로직 만들거 아니면 제거 
             return redirect('{}#comment_{}'.format(resolve_url('pybo_site:detail',question_id=comment.question.id), comment.id))
     else:
         form = CommentForm()
@@ -242,6 +245,7 @@ def comment_modify_answer(request, comment_id):
             comment = form.save(commit=False)
             comment.modify_date = timezone.now()
             comment.save()
+            # TODO: pagination 계산해서 전달
             return redirect('{}#comment_{}'.format(resolve_url('pybo_site:detail',question_id=comment.answer.question.id),comment.id))
     else:
         form = CommentForm(instance=comment)
