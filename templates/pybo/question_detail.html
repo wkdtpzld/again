@@ -189,7 +189,7 @@
             {% endif %}
         </ul>
     <!--answer 끝 answer.form 시작-->
-    <form action="{% url 'pybo_site:answer_create' question.id %}" method="post" class="my-3">
+    <form id="form-comment" action="{% url 'pybo_site:answer_create' question.id %}" method="post" class="my-3">
         {% csrf_token %}
         {% if form.errors %}
         <div class="alert alert-danger" role="alert">
@@ -204,7 +204,7 @@
         <div class="form-group">
             <textarea {% if not user.is_authenticated %}disabled {% endif %} name="content" id="content" class="form-control" rows="10"></textarea>
         </div>
-        <input type="submit" value="답변등록" class="btn btn-primary">
+        <input id="add-comment" onclick="validate_comment()" value="답변등록" class="btn btn-primary">
     </form>
     <!--answer.form 끝 jabascript -->
 </div>
@@ -224,25 +224,35 @@ $(document).ready(function(){
             location.href = $(this).data('uri');
         }
     });
+    
     $('.recommend').on('click',function(){
         if(confirm('정말로 추천하시겠습니까?')){
             location.href = $(this).data('uri');
         }
     });
+    
     $('.page-link').on('click',function(){
         $('#page').val($(this).data('page'));
         $('#searchForm').submit();
     });
+    
     $('#btn_search').on('click',function(){
         $('#kw').val($('.kw').val());
         $('#page').val(1);
         $('#searchForm').submit();
     });
+    
     $(".so").on('change', function() {
-        $("#so").val($(this).val());
-        $("#page").val(1);
-        $("#searchForm").submit();
+        $('#so').val($(this).val());
+        $('#page').val(1);
+        $('#searchForm').submit();
     });
 });
+
+function validate_comment() {
+    if ($('#content').val().length > 0 && confirm('댓글을 작성하시겠습니까?')) {
+        $('#form-comment').submit();   
+    }
+}
 </script>
 {% endblock %}
