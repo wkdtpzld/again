@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-mrxc&45aieu*kstomm!_ahr=puom+a!a3$m#)cq2vht6734_y4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['15.164.71.197']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
     'pybo_site',
     'common',
 ]
@@ -134,3 +135,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL ='/'
 
 LOGOUT_REDIRECT_URL ='/'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+# 메일을 호스트하는 서버
+EMAIL_PORT = '587'
+# gmail과의 통신하는 포트
+EMAIL_HOST_USER = 'slwhswk9@gmail.com'
+# 발신할 이메일
+EMAIL_HOST_PASSWORD = 'jhi5384zqe'
+# 발신할 메일의 비밀번호
+EMAIL_USE_TLS = True
+# TLS 보안 방법
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# 사이트와 관련한 자동응답을 받을 이메일 주소,'webmaster@localhost'
+
+CRISPY_TEMPLATE_PACK='bootstrap4'
